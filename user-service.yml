@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/user_service
     username: postgres
-    password: password
+    password: {cipher}AQCwtDGvudpP+kmtJKHLxsK7z5xigVS+xTUvJEUib8SQK99Ho+uVvTfRbKg88tIb5I9zmoP4kJCf7ZK2hcPJt7L4/hEUYkedgupo4jYCbXlC0AelZpp/L2RIRZMPKzb+yTlGUHiuEXV/+pogTuHCp3AKKmlWL28gVHqCl50+AjFIJZI3T0gkhCHpishb9RhVHbUan/jJnjsMd9oiR0qX/F8fNuyiXhuSx9fhgcqDr+BzyTtKjKL9ZZotcjEWkgNZhQGRLJ1r6lvipM2voTJQ3S3YolF/43On8OUceu1ySa1ofec5QAWBbVUu3dxJUPjANQBI1on400/JN2o9CtCoafPtJqi/A8CvGsx6RNj2MP36q4lSCazrEwKnxN80qitEqXU=
   jpa:
     hibernate:
       ddl-auto: update

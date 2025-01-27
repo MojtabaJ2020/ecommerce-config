@@ -1,11 +1,62 @@
 server:
   port: 4000
-
 spring:
+  application:
+    name: user-service
   datasource:
+    driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/user_service
     username: postgres
-    password: {cipher}AQCwtDGvudpP+kmtJKHLxsK7z5xigVS+xTUvJEUib8SQK99Ho+uVvTfRbKg88tIb5I9zmoP4kJCf7ZK2hcPJt7L4/hEUYkedgupo4jYCbXlC0AelZpp/L2RIRZMPKzb+yTlGUHiuEXV/+pogTuHCp3AKKmlWL28gVHqCl50+AjFIJZI3T0gkhCHpishb9RhVHbUan/jJnjsMd9oiR0qX/F8fNuyiXhuSx9fhgcqDr+BzyTtKjKL9ZZotcjEWkgNZhQGRLJ1r6lvipM2voTJQ3S3YolF/43On8OUceu1ySa1ofec5QAWBbVUu3dxJUPjANQBI1on400/JN2o9CtCoafPtJqi/A8CvGsx6RNj2MP36q4lSCazrEwKnxN80qitEqXU=
+    password: {cipher}AQA4t/OQJ/6X/JIrlx8rF7iNnJJPRg1Ct2mQ1YajBQRIUVXifuHRXwCEUlzXS+tj60XF6PAgYZ2OSxphRweiYe7U34NE8LlFq+GJJlM5QKf6ppf6ij2oTxyrtts71MEtzpj/eALldaFUAhPIV6jxuCqElGhk4tLdCWjoXyYJaEVGhIuWTsy/gialR2uue0/j3JMQtMRFIys8Puo5BUzNN9H5AmheKtt4QHtDSDHONLSrYv0NVlhY4PX+QufBnm6qmfWmTXDOxJebHngWp557FunURFucnG00XUIGP/8YSLwAMkp0zHRlBiT0K9dPRaHzMZliRzie6iJn96BVjbRhpHljZV4ciWoYcgBkmAxZAcKXPfZsvpbHywXJy2aUHk1uB4A=
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id:
+            client-secret:
+            scope: profile, email
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            provider: google
+          github:
+            client-id:
+            client-secret:
+            scope: read:user, user:email
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            provider: github
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+      resourceserver:
+        jwt:
+          # The URL or file location of your public key (if JWT is signed asymmetrically)
+          secret: ${jwt.secret}
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+jwt:
+  secret: {cipher}AQAlHE8uX3YmbRPLlkWDohw4yy9xzxerBfUE9uTzcZLOzTlgKUCV7zEC0QtQ4z4dkj13tvh+GVuSFnNWNMlljrk0YFo80nsWpHV+sRBWiNdrVQbaLpxqS7TGeV0nh3j7xV/EzMyjsybeSyS2cBdH9Ugx1vn+TE9TFd9bPHn8BZUUS0blEnSllgnS841QknvU8gcB3aKOA7BtymtwEmYNGcMJ/OJYybEdOPJpar7P7RCcg1oykVGGHd17y2kVV/NVjDJ4TlB0hjlRqD3GCfTrpcMJ/8wi6gsU3I/nWSWeiPbiVMZnOUdQVzHTe7+QZ0bJakoulTQ3b0ogHzDe2asQQ6uQIK5jJKSNLd9NYESzjzQoCRhgI8xX797aXtIOYNEkNl2th0UqH96eP1LNxrxjpCuWq0yt+CCLvZvTHlXsvsx6XQ==
+  refreshTokenExpiration: 180000
+  accessTokenExpiration: 30000
+security:
+  whitelisted-endpoints:
+    - /login
+    - /authenticate
+    - /refresh-token
+    - /oauth2/authorization/**
+  encryption:
+    aes-key: {cipher}AQCpVoxO+d5U28/J5fSIuEAIFUiGY4mnc6FxtreH+NmXM49w/CBq6sJcfWH3w3an45U9yRdpSAF/1R8HaM89KxJ4XPfaICChxyIV/dPLQepoHaJSdZfwc0ioko+Z0pQF3own92Tp8lFVbwubgQ4LTx1o89y5TqV9nj38hdWJf1KgmMAbkjX9AnRblpdIWFveCUEYX/HK94NyX/BvKrE8FzXbrP3kU5pqBpPnLDIBYV0JCQy7OlNCmV1CuYPoi4Y7976KQpE3KoeURdblUqcsFywHV8NxEp1kg2ZW0lPWvg6pQxJAncSpHwp8taxPLVmWMc/lAT2yDPMXlxXgvHiUbXui0PrZw16GxLrqtu7meYv9OOnFSxqqmoNCrUYhIIl/rCMiyHVgIGpg8fGEF/EEa01xLADN+ZJPKrsdPfcNVnZ3Qg==

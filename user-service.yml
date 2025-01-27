@@ -42,7 +42,7 @@ spring:
       resourceserver:
         jwt:
           # The URL or file location of your public key (if JWT is signed asymmetrically)
-          secret: ${jwt.secret}
+          # secret: ${jwt.secret}
 logging:
   level:
     org:

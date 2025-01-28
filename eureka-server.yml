@@ -5,4 +5,7 @@ eureka:
     register-with-eureka: false
     fetch-registry: false  #Determines whether this service should fetch the registry information (list of services) from the Eureka Server.
   instance:
-    hostname: localhost  #Sets the hostname or IP address that other services will use to communicate with this instance in the Eureka registry.
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:localhost}  #Sets the hostname or IP address that other services will use to communicate with this instance in the Eureka registry.
+  server:
+    enableSelfPreservation: false
+    evictionIntervalTimerInMs: 5000

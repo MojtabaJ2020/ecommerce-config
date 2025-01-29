@@ -5,9 +5,9 @@ spring:
     name: user-service
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/user_service
-    username: postgres
-    password: "{cipher}AQA4t/OQJ/6X/JIrlx8rF7iNnJJPRg1Ct2mQ1YajBQRIUVXifuHRXwCEUlzXS+tj60XF6PAgYZ2OSxphRweiYe7U34NE8LlFq+GJJlM5QKf6ppf6ij2oTxyrtts71MEtzpj/eALldaFUAhPIV6jxuCqElGhk4tLdCWjoXyYJaEVGhIuWTsy/gialR2uue0/j3JMQtMRFIys8Puo5BUzNN9H5AmheKtt4QHtDSDHONLSrYv0NVlhY4PX+QufBnm6qmfWmTXDOxJebHngWp557FunURFucnG00XUIGP/8YSLwAMkp0zHRlBiT0K9dPRaHzMZliRzie6iJn96BVjbRhpHljZV4ciWoYcgBkmAxZAcKXPfZsvpbHywXJy2aUHk1uB4A="
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/user_service}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:"{cipher}AQA4t/OQJ/6X/JIrlx8rF7iNnJJPRg1Ct2mQ1YajBQRIUVXifuHRXwCEUlzXS+tj60XF6PAgYZ2OSxphRweiYe7U34NE8LlFq+GJJlM5QKf6ppf6ij2oTxyrtts71MEtzpj/eALldaFUAhPIV6jxuCqElGhk4tLdCWjoXyYJaEVGhIuWTsy/gialR2uue0/j3JMQtMRFIys8Puo5BUzNN9H5AmheKtt4QHtDSDHONLSrYv0NVlhY4PX+QufBnm6qmfWmTXDOxJebHngWp557FunURFucnG00XUIGP/8YSLwAMkp0zHRlBiT0K9dPRaHzMZliRzie6iJn96BVjbRhpHljZV4ciWoYcgBkmAxZAcKXPfZsvpbHywXJy2aUHk1uB4A="}
   jpa:
     hibernate:
       ddl-auto: none

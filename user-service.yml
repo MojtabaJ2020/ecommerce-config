@@ -26,7 +26,9 @@ spring:
             client-secret: ${GITHUB_CLIENT_SECRET}
             scope: read:user, user:email
             authorization-grant-type: authorization_code
-            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+#            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            redirect-uri: 'http://localhost:8080/login/oauth2/code/github'
+
             provider: github
         provider:
           google:
@@ -45,8 +47,10 @@ logging:
 security:
   whitelisted-endpoints:
     - /login
+    - /register
     - /authenticate
     - /refresh-token
+    - /login/oauth2/code/**
     - /oauth2/authorization/**
   encryption:
     aes-key: ${AES_ENCRYPTION_KEY:32-characters-long-plaintext-key}

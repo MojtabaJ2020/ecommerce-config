@@ -59,6 +59,6 @@ security:
     accessTokenExpiration: ${JWT_ACCESS_TOKEN_EXPIRATION:30000}
   auth:
     redirect:
-      success-url: ${AUTH_FAILURE_REDIRECT:http://localhost:3000/auth-success}
-      failure-url: ${AUTH_SUCCESS_REDIRECT:http://localhost:3000/login}
+      success-url: ${AUTH_SUCCESS_REDIRECT:http://localhost:3000/auth-success}
+      failure-url: ${AUTH_FAILURE_REDIRECT:http://localhost:3000/login}
 

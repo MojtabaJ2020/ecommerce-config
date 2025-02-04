@@ -46,6 +46,7 @@ logging:
 security:
   whitelisted-endpoints:
     - /login
+    - /logout
     - /register
     - /authenticate
     - /refresh-token

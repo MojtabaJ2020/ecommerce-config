@@ -48,6 +48,8 @@ security:
     - /login
     - /logout
     - /register
+    - /registrationConfirm
+    - /send-verification-token
     - /authenticate
     - /refresh-token
     - /login/oauth2/code/**

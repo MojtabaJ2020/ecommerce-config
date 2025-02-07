@@ -49,7 +49,7 @@ security:
     - /logout
     - /register
     - /registrationConfirm
-    - /send-verification-token
+    - /send-activation-token
     - /authenticate
     - /refresh-token
     - /login/oauth2/code/**

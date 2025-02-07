@@ -65,7 +65,7 @@ security:
   verification-token:
     expiration: ${VERIFICATION_TOKEN_EXPIRATION:3}
 redirect-url:
-  success-login: /auth-success
-  failure-login: /login
-  success-activation: /success-user-activation
-  failure-activation: /failed-user-activation
+  after-success-login: /auth-success
+  after-failure-login: /login
+  after-success-activation: /login
+  after-failure-activation: /send-activation-token

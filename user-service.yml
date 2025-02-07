@@ -50,6 +50,8 @@ security:
     - /register
     - /registrationConfirm
     - /send-activation-token
+    - /failed-user-activation.html
+    - /success-user-activation.html
     - /authenticate
     - /refresh-token
     - /login/oauth2/code/**

@@ -48,7 +48,7 @@ security:
     - /login
     - /logout
     - /register
-    - /registrationConfirm
+    - /confirm-registration
     - /send-activation-token
     - /failed-user-activation
     - /success-user-activation

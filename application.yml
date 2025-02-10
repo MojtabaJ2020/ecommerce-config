@@ -35,3 +35,4 @@ management:
 common-params:
   base-url: ${BASE_URL:http://localhost:8080}
   front-base-url: ${FRONT_BASE_URL:http://localhost:3000}
+debug-mode: false

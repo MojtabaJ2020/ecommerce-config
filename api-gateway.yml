@@ -1,0 +1,142 @@
+server:
+  port: 8080
+spring:
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+  web:
+    resources:
+      static-locations: classpath:/static/
+      cache:
+        period: 3600 # per sec
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - ${FRONT_BASE_URL:"http://localhost:80"}  # Allow frontend
+            allowCredentials: true  # Allow cookies (JWT) to be sent
+            allowedHeaders:
+              - "*"
+            allowedMethods:
+              - GET
+              - PUT
+              - POST
+              - DELETE
+              - OPTIONS  # for preflight requests
+      discovery:
+        locator:
+          enabled: true  # Enable service discovery via Eureka
+          lower-case-service-id: true
+      routes:
+        # User Service (Handles Authentication)
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/login,/logout,/authenticate,/refresh-token,/register,/confirm-registration,/send-activation-token,/failed-user-activation,/success-user-activation,/login/oauth2/code/**,/oauth2/authorization/**,/oauth2/callback/**,/api/v1/users/**
+          filters:
+            - name: Bulkhead
+              args:
+                name: userServiceBulkhead
+            - name: CircuitBreaker
+              args:
+                name: userServiceCircuitBreaker
+                fallbackUri: forward:/fallback/user
+            - name: Retry
+              args:
+                retries: 2
+                statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
+                methods: GET,HEAD
+                backoff:
+                  firstBackoff: 100ms
+                  maxBackoff: 1s
+                  factor: 2
+                  basedOnPreviousValue: false
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter:
+                  replenishRate: 100      # Max 100 requests per second
+                  burstCapacity: 200      # Burst capacity of
+                  requestTokens: 1
+                key-resolver: "#{@userKeyResolver}"
+
+        # Order Service
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/orders/**
+
+        # Product Service
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/products/**
+
+resilience4j:
+  ratelimiter:
+    metrics:
+      enabled: true
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+    instances:
+      userServiceCircuitBreaker:  # Circuit breaker for user service
+        slidingWindowType: COUNT_BASED  # Options: COUNT_BASED, TIME_BASED
+        slidingWindowSize: 100  # Number of requests in the window
+        failureRateThreshold: 90  # Open circuit when 30% of requests fail
+        slowCallRateThreshold: 50  # Open circuit if 30% of calls are slow
+        slowCallDurationThreshold: 2s  # A slow call is defined as taking longer than 2 seconds
+        permittedNumberOfCallsInHalfOpenState: 3  # Calls allowed when circuit is half-open
+        minimumNumberOfCalls: 10  # Minimum number of calls before calculating failure rate
+        waitDurationInOpenState: 15s  # Time before switching from OPEN to HALF-OPEN
+        automaticTransitionFromOpenToHalfOpenEnabled: true  # Auto transition to half-open
+        ignoreExceptions:
+          - java.io.IOException  # Ignore network issues
+          - org.springframework.cloud.gateway.support.TimeoutException
+        recordExceptions:
+          - java.util.concurrent.TimeoutException
+          - java.lang.RuntimeException
+          - org.springframework.web.reactive.function.client.WebClientResponseException
+        writableStackTraceEnabled: false  # Disable stack trace to improve performance
+
+  timelimiter:
+    instances:
+      userServiceCircuitBreaker:
+        timeoutDuration: 5s  # Max time a request can take before timing out
+
+  bulkhead:  # Limit concurrent requests
+    metrics:
+      enabled: true
+    instances:
+      userServiceBulkhead:
+        maxConcurrentCalls: 5  # Max parallel calls
+        maxWaitDuration: 50ms  # No waiting if bulkhead is full
+  retry:  # Automatic retry
+    instances:
+      userServiceRetry:
+        maxAttempts: 3  # Retry up to 3 times
+        waitDuration: 2s  # Wait 2 seconds between retries
+        retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.io.IOException
+management:
+  health:
+    circuitbreakers.enabled: true
+    ratelimiters.enabled: true
+    bulkheads.enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,circuitbreakers,bulkheads,ratelimiters
+  resilience4j:
+    bulkhead:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
